@@ -5,6 +5,9 @@
 HighchartsとVueの連携をサポート。  
 propsで渡せばあとは本ライブラリが検知～反映までをやってくれる！ってのを目指して。。。
 `HighVueChart.vue`が本体なイメージ。  
+
+SamplePage: [click here](https://daikinakamura.github.io/high-vue-chart/)
+
 **いずれimportできるようにしなきゃ(ﾟДﾟ)**
 
 ## Build Setup
