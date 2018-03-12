@@ -1,17 +1,26 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <HighVueChart class="chart" v-bind:title="chartTitle"></HighVueChart>
     <table>
       <tr v-for="lane in series">
         <td>{{ lane.name }}</td>
         <td>
-          <span v-for="point in lane.points">{{ point }}|</span>
+          <span v-for="(val, index) in lane.data">
+            <select v-model="lane.data[index]">
+              <option v-for="n in 101">{{ n - 1 }}</option>
+            </select>
+          </span>
         </td>
       </tr>
     </table>
+    <select v-model="type">
+      <option>line</option>
+      <option>column</option>
+    </select>
     <button v-on:click="addRundom">addRundom</button>
+    <button v-on:click="addRundomAuto">addRundomAuto</button>
+    <button v-on:click="addRundomStop">addRundomStop</button>
+    <button v-on:click="addSeries">addSeries</button>
+    <HighVueChart class="chart" v-bind:type="type" v-bind:title="chartTitle" v-bind:series="series"></HighVueChart>
   </div>
 </template>
 
@@ -25,26 +34,35 @@ export default {
   },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
+      type: 'line',
       chartTitle: 'Sample',
-      series: [{
-        name: 'abc',
-        points: [10, 20, 30]
-      }, {
-        name: 'def',
-        points: [20, 10, 40]
-      }]
+      series: [{name: 'first', data:[0]}],
+      timer: null,
+      no: 0
     }
   },
   methods: {
     addRundom: function() {
-      let index = Math.floor( Math.random() * 2 );
-      let point = Math.floor( Math.random() * 101);
-      let target = this.series[index];
-      target.points.push(point);
-
-      // title change
-      this.chartTitle = 'addRundom';
+      if(this.series.length === 0) {
+        alert('no series...');
+        return;
+      }
+      var index = Math.floor( Math.random() * this.series.length);
+      var point = Math.floor( Math.random() * 101);
+      this.series[index].data.push(point);
+    },
+    addSeries: function() {
+      this.no++;
+      this.series.push({name: 'Add' + this.no, data:[0]});
+    },
+    addRundomAuto: function() {
+      var vm = this;
+      this.timer = setInterval(function() {
+        vm.addRundom();
+      }, 100);
+    },
+    addRundomStop: function() {
+      clearInterval(this.timer)
     }
   }
 }
@@ -66,10 +84,5 @@ h1, h2 {
 
 table, tr, td {
   border: 1px solid #000;
-}
-
-.chart {
-  width: 500px;
-  height: 400px;
 }
 </style>
