@@ -2,6 +2,11 @@
 
 > A Vue.js project
 
+HighchartsとVueの連携をサポート。  
+propsで渡せばあとは本ライブラリが検知～反映までをやってくれる！ってのを目指して。。。
+`HighVueChart.vue`が本体なイメージ。  
+**いずれimportできるようにしなきゃ(ﾟДﾟ)**
+
 ## Build Setup
 
 ``` bash
