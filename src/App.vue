@@ -1,30 +1,37 @@
 <template>
   <div id="app">
-    <table>
-      <tr v-for="lane in series">
-        <td>{{ lane.name }}</td>
-        <td>
-          <span v-for="(val, index) in lane.data">
-            <select v-model="lane.data[index]">
-              <option v-for="n in 101">{{ n - 1 }}</option>
-            </select>
-          </span>
-        </td>
-      </tr>
-    </table>
-    <select v-model="type">
-      <option>line</option>
-      <option>column</option>
-    </select>
-    <button v-on:click="addRundom">addRundom</button>
-    <button v-on:click="addRundomAuto">addRundomAuto</button>
-    <button v-on:click="addRundomStop">addRundomStop</button>
-    <button v-on:click="addSeries">addSeries</button>
+    <div class="form">
+      <select v-model="type">
+        <option>line</option>
+        <option>column</option>
+      </select>
+      <button v-on:click="addRundom">addRundom</button>
+      <button v-on:click="addRundomAuto">addRundomAuto</button>
+      <button v-on:click="addRundomStop">addRundomStop</button>
+      <button v-on:click="addSeries">addSeries</button>
+      <button v-on:click="crearSeries">crearSeries</button>
+    </div>
     <HighVueChart class="chart"
                   v-bind:type="type"
                   v-bind:title="chartTitle"
                   v-bind:series="series"
                   v-bind:other-options="chartOptions"></HighVueChart>
+    <div class="resultTable">
+      <table>
+        <tr v-for="lane in series">
+          <td>{{ lane.name }}</td>
+          <td>
+          <span v-for="(val, index) in lane.data">
+            <select v-model="lane.data[index]">
+              <option v-for="n in 101">{{ n - 1 }}</option>
+            </select>
+            <button v-on:click="deletePoint(lane.name, index)">x</button>
+            ||
+          </span>
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -73,6 +80,16 @@ export default {
     },
     addRundomStop: function() {
       clearInterval(this.timer)
+    },
+    crearSeries: function() {
+      this.series = [{name: 'first', data:[0]}];
+    },
+    deletePoint: function(name, index) {
+      let result = this.series.filter(function(series) {
+        return series.name === name;
+      });
+
+      result[0].data.splice(index, 1);
     }
   }
 }
@@ -94,5 +111,13 @@ h1, h2 {
 
 table, tr, td {
   border: 1px solid #000;
+}
+
+.form button {
+  width: 150px;
+  border: 2px solid cornflowerblue;
+  background-color: cornflowerblue;
+  color: #FFF;
+  font-weight: bold;
 }
 </style>

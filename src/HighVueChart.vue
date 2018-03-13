@@ -54,20 +54,36 @@ export default {
             return;
           }
 
-          if(sameBeforeSeries[0].data.length === afterSeries.data.length) {
-            // change val
-            for(let i = 0; i < afterSeries.data.length; i++) {
-              if(sameBeforeSeries[0].data[i] !== afterSeries.data[i]) {
+          let beforeSeries = sameBeforeSeries[0];
+          let beforeDataLength = beforeSeries.data.length;
+          let afterDataLength = afterSeries.data.length;
+          if(beforeDataLength === afterDataLength) {
+            // change Point value
+            for(let i = 0; i < afterDataLength; i++) {
+              if(beforeSeries.data[i] !== afterSeries.data[i]) {
                 vm.updateVal(i, afterSeries.name, afterSeries.data[i]);
               }
             }
           }
 
-          if(sameBeforeSeries[0].data.length !== afterSeries.data.length) {
-            // addNewPoint
-            let point = afterSeries.data[afterSeries.data.length - 1];
+          if(beforeDataLength < afterDataLength) {
+
+            // add Point
+            let point = afterSeries.data[afterDataLength - 1];
             vm.addPoint(afterSeries.name, point);
             return;
+
+          } else if(beforeDataLength > afterDataLength) {
+
+            // delete Point
+            let cursor = 0;
+            for(let i = 0; i < beforeDataLength; i++) {
+              if(beforeSeries.data[i] !== afterSeries.data[cursor]) {
+                vm.removePoint(afterSeries.name, i);
+              } else {
+                cursor++;
+              }
+            }
           }
         });
         this.beforeSeries = JSON.parse(JSON.stringify(after));
@@ -186,6 +202,14 @@ export default {
       }
 
       series.data[index].update(parseInt(point, 10));
+    },
+    removePoint: function(name, index) {
+      let series = this.getSeries(name);
+      if(!series) {
+        return;
+      }
+
+      series.removePoint(index);
     }
   }
 }
