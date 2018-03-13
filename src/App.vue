@@ -78,7 +78,7 @@ export default {
     },
     addRundomAuto: function() {
       let vm = this;
-      if(this.timer) {
+      if(this.timer || this.series.length === 0) {
         return;
       }
       this.timer = setInterval(function() {
@@ -86,10 +86,13 @@ export default {
       }, 100);
     },
     addRundomStop: function() {
-      clearInterval(this.timer);
-      this.timer = null;
+      if(this.timer) {
+        clearInterval(this.timer);
+        this.timer = null;
+      }
     },
     crearSeries: function() {
+      this.addRundomStop();
       this.series = [];
     },
     deleteSeries: function(index) {
