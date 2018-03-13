@@ -43,12 +43,26 @@ export default {
       handler: function(after) {
         let before = this.beforeSeries;
         let vm = this;
+
+        // remove Series
+        if(after.length < before.length) {
+          before.forEach(function(beforeSeries) {
+            let hit = after.filter(function(afterSeries) {
+              return beforeSeries.name === afterSeries.name;
+            });
+
+            if(hit.length === 0) {
+              vm.removeSeries(beforeSeries.name);
+            }
+          });
+        }
+
         after.forEach(function(afterSeries) {
           let sameBeforeSeries = before.filter(function(beforeSeries) {
             return beforeSeries.name === afterSeries.name;
           });
 
-          // addNewSeries
+          // add Series
           if(sameBeforeSeries.length === 0) {
             vm.addSeries(JSON.parse(JSON.stringify(afterSeries)));
             return;
@@ -210,6 +224,14 @@ export default {
       }
 
       series.removePoint(index);
+    },
+    removeSeries: function(name) {
+      let series = this.getSeries(name);
+      if(!series) {
+        return;
+      }
+
+      series.remove();
     }
   }
 }
