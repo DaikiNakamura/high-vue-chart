@@ -78,10 +78,14 @@ export default {
     },
     addRundomAuto: function() {
       let vm = this;
-      if(this.timer || this.series.length === 0) {
+      if(this.timer) {
         return;
       }
       this.timer = setInterval(function() {
+        if(vm.series.length === 0) {
+          vm.addRundomStop();
+          return;
+        }
         vm.addRundom();
       }, 100);
     },
