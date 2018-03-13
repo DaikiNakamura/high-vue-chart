@@ -20,7 +20,11 @@
     <button v-on:click="addRundomAuto">addRundomAuto</button>
     <button v-on:click="addRundomStop">addRundomStop</button>
     <button v-on:click="addSeries">addSeries</button>
-    <HighVueChart class="chart" v-bind:type="type" v-bind:title="chartTitle" v-bind:series="series"></HighVueChart>
+    <HighVueChart class="chart"
+                  v-bind:type="type"
+                  v-bind:title="chartTitle"
+                  v-bind:series="series"
+                  v-bind:other-options="chartOptions"></HighVueChart>
   </div>
 </template>
 
@@ -38,7 +42,13 @@ export default {
       chartTitle: 'Sample',
       series: [{name: 'first', data:[0]}],
       timer: null,
-      no: 0
+      no: 0,
+      chartOptions: {
+        tooltip: {
+          shared: true,
+          crosshairs: true
+        }
+      }
     }
   },
   methods: {
@@ -47,8 +57,8 @@ export default {
         alert('no series...');
         return;
       }
-      var index = Math.floor( Math.random() * this.series.length);
-      var point = Math.floor( Math.random() * 101);
+      let index = Math.floor( Math.random() * this.series.length);
+      let point = Math.floor( Math.random() * 101);
       this.series[index].data.push(point);
     },
     addSeries: function() {
@@ -56,7 +66,7 @@ export default {
       this.series.push({name: 'Add' + this.no, data:[0]});
     },
     addRundomAuto: function() {
-      var vm = this;
+      let vm = this;
       this.timer = setInterval(function() {
         vm.addRundom();
       }, 100);

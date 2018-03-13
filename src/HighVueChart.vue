@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Highcharts from 'Highcharts'
+import Highcharts from 'highcharts'
 export default {
   name: 'HighVueChart',
   props:{
@@ -20,26 +20,31 @@ export default {
     type: {
       type: String,
       required: true
+    },
+    otherOptions: {
+  	  type: Object,
+      required: false,
+      default: {}
     }
   },
   watch: {
     // hook: change Type
-    type: function(after, before) {
-      this.changeType(after);
+    type: function(afterType) {
+      this.changeType(afterType);
     },
 
   	// hook: change Title
-  	title: function(newTitle, oldTitle) {
-  		this.changeTitle(newTitle);
+  	title: function(afterTitle) {
+  		this.changeTitle(afterTitle);
   	},
 
   	// hook change Series
     series: {
       handler: function(after) {
-        var before = this.beforeSeries;
-        var vm = this;
+        let before = this.beforeSeries;
+        let vm = this;
         after.forEach(function(afterSeries) {
-          var sameBeforeSeries = before.filter(function(beforeSeries) {
+          let sameBeforeSeries = before.filter(function(beforeSeries) {
             return beforeSeries.name === afterSeries.name;
           });
 
@@ -51,7 +56,7 @@ export default {
 
           if(sameBeforeSeries[0].data.length === afterSeries.data.length) {
             // change val
-            for(var i = 0; i < afterSeries.data.length; i++) {
+            for(let i = 0; i < afterSeries.data.length; i++) {
               if(sameBeforeSeries[0].data[i] !== afterSeries.data[i]) {
                 vm.updateVal(i, afterSeries.name, afterSeries.data[i]);
               }
@@ -60,7 +65,7 @@ export default {
 
           if(sameBeforeSeries[0].data.length !== afterSeries.data.length) {
             // addNewPoint
-            var point = afterSeries.data[afterSeries.data.length - 1];
+            let point = afterSeries.data[afterSeries.data.length - 1];
             vm.addPoint(afterSeries.name, point);
             return;
           }
@@ -78,8 +83,8 @@ export default {
   },
   mounted: function() {
 
-    var nowSeries = this.beforeSeries = JSON.parse(JSON.stringify(this.series));
-    var options = {
+    let nowSeries = this.beforeSeries = JSON.parse(JSON.stringify(this.series));
+    let options = {
       chart: {
         type: this.type
       },
@@ -89,14 +94,18 @@ export default {
       series: nowSeries
     };
 
-    var chart = this.createChart(options);
+    if(this.otherOptions) {
+      options = Object.assign(options, this.otherOptions);
+    }
+
+    this.createChart(options);
   },
   methods: {
 
     // create Highcharts object
     createChart: function(options) {
 
-  	  var chart = this.getChart();
+      let chart = this.getChart();
   	  if(chart) {
   	    return chart;
       }
@@ -112,12 +121,12 @@ export default {
     // get a Series from highcharts object.
     getSeries: function(name) {
 
-  	  var chart = this.getChart();
+      let chart = this.getChart();
   	  if(!chart) {
   	    return null;
       }
 
-      var result = chart.series.filter(function(series) {
+      let result = chart.series.filter(function(series) {
         return series.name === name;
       });
 
@@ -132,7 +141,7 @@ export default {
 
     changeTitle: function(title) {
 
-      var chart = this.getChart();
+      let chart = this.getChart();
       if(!chart) {
         return;
       }
@@ -142,7 +151,7 @@ export default {
 
     changeType: function(type) {
 
-      var chart = this.getChart();
+      let chart = this.getChart();
       if(!chart) {
         return;
       }
@@ -155,7 +164,7 @@ export default {
     },
     addSeries: function(series) {
 
-      var chart = this.getChart();
+      let chart = this.getChart();
       if(!chart) {
         return;
       }
@@ -163,7 +172,7 @@ export default {
       chart.addSeries(series);
     },
     addPoint: function(name, point) {
-      var series = this.getSeries(name);
+      let series = this.getSeries(name);
       if(!series) {
         return;
       }
@@ -171,7 +180,7 @@ export default {
       series.addPoint(point);
     },
     updateVal: function(index, name, point) {
-      var series = this.getSeries(name);
+      let series = this.getSeries(name);
       if(!series) {
         return;
       }
