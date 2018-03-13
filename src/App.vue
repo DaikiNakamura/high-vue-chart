@@ -1,16 +1,20 @@
 <template>
   <div id="app">
     <div class="form">
+      <input type="text" v-model="chartTitle"/>
       <select v-model="type">
         <option>line</option>
         <option>column</option>
       </select>
+      <br />
+      <br />
       <button v-on:click="addRundom">addRundom</button>
       <button v-on:click="addRundomAuto">addRundomAuto</button>
       <button v-on:click="addRundomStop">addRundomStop</button>
       <button v-on:click="addSeries">addSeries</button>
       <button v-on:click="crearSeries">crearSeries</button>
     </div>
+    <hr />
     <HighVueChart class="chart"
                   v-bind:type="type"
                   v-bind:title="chartTitle"
@@ -18,8 +22,8 @@
                   v-bind:other-options="chartOptions"></HighVueChart>
     <div class="resultTable">
       <table>
-        <tr v-for="lane in series">
-          <td>{{ lane.name }}</td>
+        <tr v-for="(lane, s_index) in series">
+          <td>{{ lane.name }}<button v-on:click="deleteSeries(s_index)">x</button></td>
           <td>
           <span v-for="(val, index) in lane.data">
             <select v-model="lane.data[index]">
@@ -74,15 +78,22 @@ export default {
     },
     addRundomAuto: function() {
       let vm = this;
+      if(this.timer) {
+        return;
+      }
       this.timer = setInterval(function() {
         vm.addRundom();
       }, 100);
     },
     addRundomStop: function() {
-      clearInterval(this.timer)
+      clearInterval(this.timer);
+      this.timer = null;
     },
     crearSeries: function() {
-      this.series = [{name: 'first', data:[0]}];
+      this.series = [];
+    },
+    deleteSeries: function(index) {
+      this.series.splice(index, 1);
     },
     deletePoint: function(name, index) {
       let result = this.series.filter(function(series) {
